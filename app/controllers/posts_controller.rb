@@ -27,14 +27,19 @@ class PostsController < ApplicationController
     def show
         post = Post.find(params[:id])
         if post
-            render json: post.as_json(except: [:created_at,:updated_at, :deleted])
+            comment = post.comments
+            body = {
+                "Post" => post.as_json(except: [:created_at,:updated_at, :deleted]),
+                "comment" => comment.as_json(except: [:created_at,:updated_at, :deleted])
+            }
+            render json: body
         else
             render json: {"success": false,"message":"Post with the given id doesnt exist"}
         end
     end
 
     def destroy
-        post= Post.find(params[:id]).destroy
+        post= Post.unscoped.find(params[:id]).destroy
         if post.destroy
             render json: {"success": true, "message": "Posts deleted"}
         else
@@ -45,6 +50,10 @@ class PostsController < ApplicationController
     def soft_delete
         post= Post.find(params[:id])
         post.deleted=true
+        post.comments.each do |i|
+            i[:deleted] =true
+            i.save
+        end
         if post.save
             render json: {"success": true, "message": "Post body soft deleted"}
         else

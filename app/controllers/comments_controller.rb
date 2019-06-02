@@ -10,7 +10,7 @@ class CommentsController < ApplicationController
     end
 
     def update
-        comment= Comment.find(params[:comment_id])
+        comment= Comment.find(params[:id])
         comment.update_attribute(:content,params[:content]) 
         if comment.save
             render json: {"success": true, "message": "comment body updated"}
@@ -26,7 +26,7 @@ class CommentsController < ApplicationController
 
     def show
         begin 
-            comment = Comment.find(params[:comment_id])
+            comment = Comment.find(params[:id])
             render json: comment.as_json(except: [:created_at,:updated_at,:deleted])
         rescue Exception => e
             render json: {"success": false,"message":"comment with the given id doesnt exist"}
@@ -34,7 +34,7 @@ class CommentsController < ApplicationController
     end
 
     def destroy
-        comment= Comment.find(params[:comment_id]).destroy
+        comment= Comment.unscoped.find(params[:id]).destroy
         if comment.destroy
             render json: {"success": true, "message": "comments deleted"}
         else
@@ -43,7 +43,7 @@ class CommentsController < ApplicationController
     end
 
     def soft_delete
-        comment= Comment.find(params[:comment_id])
+        comment= Comment.find(params[:id])
         comment.deleted=true
         if comment.save
             render json: {"success": true, "message": "comment body soft deleted"}
@@ -56,6 +56,6 @@ class CommentsController < ApplicationController
     private
 
     def comment_params
-        params.require(:comment).permit(:content,:post_id)
+        params.permit(:content, :post_id)
     end
 end
