@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  get 'posts/trash',                       :to => 'posts#trash'
   resources :posts , except: [:new] do
     member do
       get :soft_delete

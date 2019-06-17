@@ -61,6 +61,26 @@ class PostsController < ApplicationController
         end
     end
 
+    def trash
+        posts = Post.unscoped.where(:deleted => true)
+        trashes = []
+        posts.each do |i|
+            trash = {
+                :post => i.as_json,
+                :comments => {
+                    "content": "Testing Trash",
+                    "post_id": 10
+                }
+            }
+            trashes << trash
+        end
+        if trashes
+            render json: {"success":true, "data": trashes }
+        else
+            render json: {"message": "recycle bin is empty"}
+        end
+    end
+
 
     private
 
