@@ -12,7 +12,7 @@ module Forum
     config.load_defaults 5.2
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origins 'localhost:3000', /https*:\/\/.*?intense-tundra-13872.herokuapp\.com/
+        origins 'localhost:3000', /https*:\/\/.*?healthgraph-forum.herokuapp\.com/
         resource '*', :headers => :any, :methods => :any
       end
     end
